@@ -3,7 +3,9 @@
 session_start();
 
 require 'database.php';
+require 'log.php';
 
+logInfo("dsd");
 if(isset($_SESSION['usuario_id'])){
     $records = $conn->prepare('SELECT id, email, password FROM usuario WHERE id =:id');
     $records->bindParam(':id',$_SESSION['usuario_id']);
