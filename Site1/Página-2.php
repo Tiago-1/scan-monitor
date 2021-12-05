@@ -1,3 +1,30 @@
+<?php 
+
+require 'service/ping.php'; 
+
+$search = $_GET['searchIp'];
+$flag_bol = false;
+
+if(!empty($search)){
+  $flag_bol = true;  
+}
+$ip = $search;
+
+exec("ping -c 1 $ip", $output, $result);
+
+//foreach ($output as $clave => $valor) {
+//  // $array[3] se actualizará con cada valor de $array...
+//  echo "<br> {$clave} => {$valor} ";
+//  print_r($output);
+//}
+
+if ($result == 0){
+  echo "Ping successful!";
+}else{
+  echo "Ping unsuccessful!";
+}
+?>
+
 <!DOCTYPE html>
 <html style="font-size: 16px;">
   <head>
@@ -63,11 +90,15 @@
       <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
         
         <div class="u-expanded-width u-table u-table-responsive u-table-1">
-          <div class="searchIp">
-            <input type="search" name="searchIp" id="searchIp" placeholder="Agrega la direccion IP a monitorear">
-            <button id="ping-on">Ping</button>
-          </div>
-          
+          <form class="searchIp" method="GET">
+            <input class="searchIP-input" type="search" name="searchIp" id="searchIp" placeholder="Agrega la direccion IP a monitorear" value="<?php echo $search ?>">
+            <input class="searchIP-button" id="ping-on" type="submit" value="Ping">
+          </form>
+          <!--
+          <?php if ($flag_bol) { ?>
+            <button>Queeeee</button>  
+          <?php }?>
+          -->
           <table class="u-table-entity u-table-entity-1">
             <colgroup>
               <col width="11%">
