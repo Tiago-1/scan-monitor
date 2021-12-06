@@ -12,19 +12,22 @@ if(!empty($_POST['searchIp'])){
   $searchPost = $_POST['searchIp'];
 
 }
-exec("ping -c 1 $ip", $output, $result);
+if(!empty($ip)){
+  exec("ping -c 1 $ip", $output, $result);
 
-//foreach ($output as $clave => $valor) {
-//  // $array[3] se actualizará con cada valor de $array...
-//  echo "<br> {$clave} => {$valor} ";
-//  print_r($output);
-//}
-
-if ($result == 0){
-  $active = 1;
-}else{
-  $active = 0;
+  //foreach ($output as $clave => $valor) {
+  //  // $array[3] se actualizará con cada valor de $array...
+  //  echo "<br> {$clave} => {$valor} ";
+  //  print_r($output);
+  //}
+  
+  if ($result == 0){
+    $active = 1;
+  }else{
+    $active = 0;
+  }
 }
+
 
 if(!empty($searchPost)){
   $sql = "INSERT INTO historial (email,update_time,host,state) VALUES (:email,NOW(),:host,:state)";
