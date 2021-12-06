@@ -3,12 +3,11 @@
 require 'service/ping.php'; 
 require 'partials/usuario.php';
 
-
-if($_GET['searchIp']){
+if(!empty($_GET['searchIp'])){
   $searchGet = $_GET['searchIp'];  
   $ip = $searchGet;
 }
-if($_POST['searchIp']){
+if(!empty($_POST['searchIp'])){
   $ip = $searchPost;  
   $searchPost = $_POST['searchIp'];
 
