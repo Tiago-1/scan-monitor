@@ -1,24 +1,3 @@
-<?php
-
-session_start();
-
-require 'database.php';
-
-if(isset($_SESSION['usuario_id'])){
-    $records = $conn->prepare('SELECT id, email, password FROM usuario WHERE id =:id');
-    $records->bindParam(':id',$_SESSION['usuario_id']);
-    $records->execute();
-    $results = $records->fetch(PDO::FETCH_ASSOC);
-
-    $user = null;
-
-    if(count($results) > 0) {
-        $user = $results;
-    }
-}
-
-?>
-
 <!DOCTYPE html>
 <html style="font-size: 16px;">
   <head>
@@ -47,6 +26,7 @@ if(isset($_SESSION['usuario_id'])){
     <meta property="og:title" content="Inicio">
     <meta property="og:type" content="website">
   </head>
+  <?php require 'partials/usuario.php' ?>
   <body class="u-body"><header class="u-clearfix u-header u-header" id="sec-8dca"><div class="u-clearfix u-sheet u-sheet-1">
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
           <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;">
@@ -58,16 +38,6 @@ if(isset($_SESSION['usuario_id'])){
             </a>
           </div>
           <div class="u-custom-menu u-nav-container">
-          <?php if(!empty($user)):  ?>
-    <br>Bienvenido: <?= $user['email'] ?>
-    <br>Estas satisfactoriamente ingresado a la página
-    <?php else:  ?>
-   
-    <h1>Por favor, Registrate o Inicia Sesión</h1>
-
-    <a href="inicio_sesion.php">Iniciar Sesión</a> o 
-    <a href="registrarse.php">Registrarse</a>
-    <?php endif; ?>
             <ul class="u-nav u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="Inicio.html" style="padding: 10px 20px;">Inicio</a>
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="Acerca-de.html" style="padding: 10px 20px;">Acerca de</a>
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="Contact.html" style="padding: 10px 20px;">Contáctanos</a>

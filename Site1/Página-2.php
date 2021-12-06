@@ -1,15 +1,22 @@
 <?php 
 
 require 'service/ping.php'; 
+require 'partials/usuario.php';
 
-$search = $_GET['searchIp'];
+$searchPost = $_POST['searchIp'];
+$searchGet = $_GET['searchIp'];
+
+
 $flag_bol = false;
 
-if(!empty($search)){
+if(!empty($searchGet)){
   $flag_bol = true;  
+  $ip = $searchGet;
 }
-$ip = $search;
-
+if(!empty($searchPost)){
+  $flag_bol = true;
+  $ip = $searchPost;  
+}
 exec("ping -c 1 $ip", $output, $result);
 
 //foreach ($output as $clave => $valor) {
@@ -19,10 +26,21 @@ exec("ping -c 1 $ip", $output, $result);
 //}
 
 if ($result == 0){
-  echo "Ping successful!";
+  $active = 1;
 }else{
-  echo "Ping unsuccessful!";
+  $active = 0;
 }
+
+if(!empty($searchPost)){
+  $sql = "INSERT INTO historial (email,update_time,host,state) VALUES (:email,:date,:host,:state)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':email',$user['email']);
+  $stmt->bindParam(':date',$date);
+  $stmt->bindParam(':host',$searchPost);
+  $stmt->bindParam(':state',$active);
+  $stmt->execute();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -90,52 +108,51 @@ if ($result == 0){
       <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
         
         <div class="u-expanded-width u-table u-table-responsive u-table-1">
-          <form class="searchIp" method="GET">
+          <form class="searchIp" action="Página-2.php" method="POST">
             <input class="searchIP-input" type="search" name="searchIp" id="searchIp" placeholder="Agrega la direccion IP a monitorear" value="<?php echo $search ?>">
             <input class="searchIP-button" id="ping-on" type="submit" value="Ping">
           </form>
-          <!--
-          <?php if ($flag_bol) { ?>
-            <button>Queeeee</button>  
-          <?php }?>
-          -->
+         
           <table class="u-table-entity u-table-entity-1">
             <colgroup>
-              <col width="11%">
-              <col width="11%">
-              <col width="11%">
-              <col width="11.3%">
-              <col width="10.8%">
-              <col width="11%">
-              <col width="11.7%">
-              <col width="11.2%">
-              <col width="11%">
+              <col width="10%">
+              <col width="20%">
+              <col width="50%">
+              <col width="30%">
             </colgroup>
+
             <tbody class="u-table-alt-palette-1-light-3 u-table-body">
               <tr style="height: 44px;">
                 <td class="u-table-cell">Id</td>
                 <td class="u-table-cell">Estado</td>
-                <td class="u-table-cell">Nombre</td>
-                <td class="u-table-cell">IP</td>
-                <td class="u-table-cell">Fabricante</td>
-                <td class="u-table-cell">Tipo</td>
-                <td class="u-table-cell">Mac address</td>
-                <td class="u-table-cell">Alias</td>
+                <td class="u-table-cell">Host</td>
                 <td class="u-table-cell">Opciones</td>
               </tr>
+              <?php if ($flag_bol) { ?>
               <tr style="height: 65px;">
-                <td class="u-table-cell">1</td>
-                <td class="u-table-cell">Descripción</td>
-                <td class="u-table-cell">Descripción</td>
-                <td class="u-table-cell"></td>
-                <td class="u-table-cell"></td>
-                <td class="u-table-cell"></td>
-                <td class="u-table-cell"></td>
-                <td class="u-table-cell">Descripción</td>
-                <td class="u-table-cell"></td>
+                <td class="u-table-cell">1221-02</td>
+                <?php if($active) {?>
+                  <td class="u-table-cell icon-master"> 
+                  <div class="icon green-icon"></div>  
+                  <label>Activo</label>
+                </td>
+                <?php } else{?>
+                  <td class="u-table-cell icon-master">
+                  <div class="icon red-icon"></div>  
+                  <label>Inactivo</label>
+                </td>
+                <?php }?>
+                <td class="u-table-cell"><?php echo $ip; ?></td>
+                <td class="u-table-cell">
+                  <form  method="get">
+                      <input class="invisible" name="searchIp" value= "<?php echo $ip; ?>">
+                      <input type="submit" value="Actualizar">
+                  </form>
+                </td>
               </tr>
               
             </tbody>
+            <?php }?>
           </table>
         </div>
       </div>
