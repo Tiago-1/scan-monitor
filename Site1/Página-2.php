@@ -4,21 +4,14 @@ require 'service/ping.php';
 require 'partials/usuario.php';
 
 
-
-
-$searchPost = $_POST['searchIp'];
-$searchGet = $_GET['searchIp'];
-
-
-$flag_bol = false;
-
-if(!empty($searchGet)){
-  $flag_bol = true;  
+if($_GET['searchIp']){
+  $searchGet = $_GET['searchIp'];  
   $ip = $searchGet;
 }
-if(!empty($searchPost)){
-  $flag_bol = true;
+if($_POST['searchIp']){
   $ip = $searchPost;  
+  $searchPost = $_POST['searchIp'];
+
 }
 exec("ping -c 1 $ip", $output, $result);
 
@@ -154,7 +147,7 @@ if($user['email']){
               while ($historial[$index]) {
                ?>
                 <tr style="height: 65px;">
-                <td class="u-table-cell"><?php echo $historial[$index]['id'];?></td>
+                <td class="u-table-cell">00-<?php echo $historial[$index]['id'];?></td>
                 <?php if($historial[$index]['state']) {?>
                   <td class="u-table-cell icon-master"> 
                   <div class="icon green-icon"></div>  
