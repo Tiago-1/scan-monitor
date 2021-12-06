@@ -52,6 +52,10 @@ if($user['email']){
   //echo($historial[1]['update_time']);
   
 }
+if(empty($searchGet)){
+  $searchGet = "";
+}
+
 
 ?>
 
