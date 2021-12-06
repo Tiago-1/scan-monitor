@@ -150,7 +150,6 @@ if(empty($searchGet)){
 
               <?php 
               $index = 0;
-
               while (!empty($historial[$index])) {
                ?>
                 <tr style="height: 65px;">
@@ -177,6 +176,17 @@ if(empty($searchGet)){
               </tr>
               <?php
               $index = $index + 1;
+              }
+              if($index == 0){
+                ?>
+                <tr style="height: 65px;">
+                <td class="u-table-cell"></td>
+                <td class="u-table-cell"></td>
+                <td class="u-table-cell"> <h5 style="margin:0; padding:0; color:gray;">No hay historial</h5></td>
+                <td class="u-table-cell"></td>
+                <td class="u-table-cell"></td>
+              </tr>
+                <?php
               }
               ?>
               <!--
@@ -208,6 +218,8 @@ if(empty($searchGet)){
             </tbody>
             <?php }?>
           </table>
+
+          
         </div>
       </div>
     </section>
