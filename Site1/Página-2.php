@@ -3,6 +3,9 @@
 require 'service/ping.php'; 
 require 'partials/usuario.php';
 
+
+
+
 $searchPost = $_POST['searchIp'];
 $searchGet = $_GET['searchIp'];
 
@@ -32,13 +35,27 @@ if ($result == 0){
 }
 
 if(!empty($searchPost)){
-  $sql = "INSERT INTO historial (email,update_time,host,state) VALUES (:email,:date,:host,:state)";
+  $sql = "INSERT INTO historial (email,update_time,host,state) VALUES (:email,NOW(),:host,:state)";
   $stmt = $conn->prepare($sql);
   $stmt->bindParam(':email',$user['email']);
-  $stmt->bindParam(':date',$date);
   $stmt->bindParam(':host',$searchPost);
   $stmt->bindParam(':state',$active);
   $stmt->execute();
+}
+
+if($user['email']){
+  $records = $conn->prepare('SELECT id, state, host, update_time FROM historial WHERE email =:email ORDER BY update_time desc');
+  $records->bindParam(':email',$user['email']);
+  $records->execute();
+  $results = $records->fetchAll(PDO::FETCH_BOTH);
+
+  $historial = null;
+
+  if(count($results) > 0) {
+      $historial = $results;
+  }  
+  //echo($historial[1]['update_time']);
+  
 }
 
 ?>
@@ -109,7 +126,7 @@ if(!empty($searchPost)){
         
         <div class="u-expanded-width u-table u-table-responsive u-table-1">
           <form class="searchIp" action="Página-2.php" method="POST">
-            <input class="searchIP-input" type="search" name="searchIp" id="searchIp" placeholder="Agrega la direccion IP a monitorear" value="<?php echo $search ?>">
+            <input class="searchIP-input" type="search" name="searchIp" id="searchIp" placeholder="Agrega la direccion IP a monitorear" value="<?php echo $searchGet ?>">
             <input class="searchIP-button" id="ping-on" type="submit" value="Ping">
           </form>
          
@@ -117,8 +134,9 @@ if(!empty($searchPost)){
             <colgroup>
               <col width="10%">
               <col width="20%">
-              <col width="50%">
               <col width="30%">
+              <col width="20%">
+              <col width="20%">
             </colgroup>
 
             <tbody class="u-table-alt-palette-1-light-3 u-table-body">
@@ -126,8 +144,42 @@ if(!empty($searchPost)){
                 <td class="u-table-cell">Id</td>
                 <td class="u-table-cell">Estado</td>
                 <td class="u-table-cell">Host</td>
+                <td class="u-table-cell">Fecha actualizacion</td>
                 <td class="u-table-cell">Opciones</td>
               </tr>
+
+
+              <?php 
+              $index = 0;
+              while ($historial[$index]) {
+               ?>
+                <tr style="height: 65px;">
+                <td class="u-table-cell"><?php echo $historial[$index]['id'];?></td>
+                <?php if($historial[$index]['state']) {?>
+                  <td class="u-table-cell icon-master"> 
+                  <div class="icon green-icon"></div>  
+                  <label>Activo</label>
+                </td>
+                <?php } else{?>
+                  <td class="u-table-cell icon-master">
+                  <div class="icon red-icon"></div>  
+                  <label>Inactivo</label>
+                </td>
+                <?php }?>
+                <td class="u-table-cell"><?php echo $historial[$index]['host']; ?></td>
+                <td class="u-table-cell"><?php echo $historial[$index]['update_time']; ?></td>
+                <td class="u-table-cell">
+                  <form  method="get">
+                      <input class="invisible" name="searchIp" value= "<?php echo $historial[$index]['host']; ?>">
+                      <input type="submit" value="Actualizar">
+                  </form>
+                </td>
+              </tr>
+              <?php
+              $index = $index + 1;
+              }
+              ?>
+              <!--
               <?php if ($flag_bol) { ?>
               <tr style="height: 65px;">
                 <td class="u-table-cell">1221-02</td>
@@ -142,6 +194,7 @@ if(!empty($searchPost)){
                   <label>Inactivo</label>
                 </td>
                 <?php }?>
+
                 <td class="u-table-cell"><?php echo $ip; ?></td>
                 <td class="u-table-cell">
                   <form  method="get">
@@ -149,7 +202,8 @@ if(!empty($searchPost)){
                       <input type="submit" value="Actualizar">
                   </form>
                 </td>
-              </tr>
+                 </tr>
+                -->
               
             </tbody>
             <?php }?>
