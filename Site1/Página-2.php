@@ -150,7 +150,8 @@ if(empty($searchGet)){
 
               <?php 
               $index = 0;
-              while ($historial[$index]) {
+
+              while (!empty($historial[$index])) {
                ?>
                 <tr style="height: 65px;">
                 <td class="u-table-cell">00-<?php echo $historial[$index]['id'];?></td>
